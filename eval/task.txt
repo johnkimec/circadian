@@ -1,0 +1,1 @@
+Write clamp.py with a function clamp(x, lo, hi) that limits x to the inclusive range from lo to hi. Add test_clamp.py that checks a value below the range, a value inside it, and a value above it. Use only the Python standard library.

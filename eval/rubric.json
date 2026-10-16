@@ -1,0 +1,20 @@
+{
+  "criteria": [
+    {
+      "id": "bounds",
+      "text": "clamp returns lo when x is below lo, hi when x is above hi, and x otherwise, including the endpoints."
+    },
+    {
+      "id": "library",
+      "text": "The files import nothing outside the Python standard library."
+    },
+    {
+      "id": "tests",
+      "text": "test_clamp.py checks a value below the range, a value inside it, and a value above it, and those checks pass."
+    },
+    {
+      "id": "scope",
+      "text": "The change does not add a feature other than clamp and its tests."
+    }
+  ]
+}

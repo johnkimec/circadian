@@ -1,0 +1,13 @@
+# Agentic development
+.agents/
+AGENT.md
+docs/
+skills-lock.json
+
+# Runtime session records
+.circadian/
+
+__pycache__/
+.pytest_cache/
+*.pyc
+.venv/

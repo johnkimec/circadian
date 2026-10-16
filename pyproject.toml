@@ -1,0 +1,9 @@
+[project]
+name = "circadian"
+version = "0.1.0"
+description = "Notice when a Cursor coding session is getting worse, and write a handoff."
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

@@ -1,0 +1,197 @@
+{
+  "reread_shift": {
+    "compaction_happened": false,
+    "events": [
+      {"kind": "file_read", "target": "A", "failed": false},
+      {"kind": "file_read", "target": "B", "failed": false},
+      {"kind": "file_read", "target": "C", "failed": false},
+      {"kind": "file_read", "target": "D", "failed": false},
+      {"kind": "file_read", "target": "E", "failed": false},
+      {"kind": "file_read", "target": "A", "failed": false},
+      {"kind": "file_read", "target": "A", "failed": false},
+      {"kind": "file_read", "target": "A", "failed": false},
+      {"kind": "file_read", "target": "A", "failed": false},
+      {"kind": "file_read", "target": "A", "failed": false}
+    ],
+    "expect": {
+      "fire": true,
+      "behavior": "reread",
+      "moment_index": 9,
+      "earlier_count": 0,
+      "earlier_total": 5,
+      "later_count": 5,
+      "later_total": 5,
+      "min_z": 3
+    }
+  },
+  "failure_shift": {
+    "compaction_happened": false,
+    "events": [
+      {"kind": "command", "target": "c0", "failed": false},
+      {"kind": "command", "target": "c1", "failed": false},
+      {"kind": "command", "target": "c2", "failed": false},
+      {"kind": "command", "target": "c3", "failed": false},
+      {"kind": "command", "target": "boom", "failed": true},
+      {"kind": "command", "target": "boom", "failed": true},
+      {"kind": "command", "target": "boom", "failed": true},
+      {"kind": "command", "target": "boom", "failed": true},
+      {"kind": "command", "target": "boom", "failed": true},
+      {"kind": "command", "target": "boom", "failed": true}
+    ],
+    "expect": {
+      "fire": true,
+      "behavior": "repeated_failure",
+      "moment_index": 6,
+      "earlier_count": 0,
+      "earlier_total": 3,
+      "later_count": 3,
+      "later_total": 4
+    }
+  },
+  "loop_shift": {
+    "compaction_happened": false,
+    "events": [
+      {"kind": "command", "target": "u0", "failed": false},
+      {"kind": "command", "target": "u1", "failed": false},
+      {"kind": "command", "target": "u2", "failed": false},
+      {"kind": "command", "target": "u3", "failed": false},
+      {"kind": "command", "target": "u4", "failed": false},
+      {"kind": "command", "target": "one", "failed": false},
+      {"kind": "command", "target": "two", "failed": false},
+      {"kind": "command", "target": "one", "failed": false},
+      {"kind": "command", "target": "two", "failed": false},
+      {"kind": "command", "target": "one", "failed": false},
+      {"kind": "command", "target": "two", "failed": false},
+      {"kind": "command", "target": "one", "failed": false},
+      {"kind": "command", "target": "two", "failed": false},
+      {"kind": "command", "target": "one", "failed": false},
+      {"kind": "command", "target": "two", "failed": false},
+      {"kind": "command", "target": "one", "failed": false}
+    ],
+    "expect": {
+      "fire": true,
+      "behavior": "loop",
+      "moment_index": 13,
+      "earlier_count": 0,
+      "earlier_total": 7,
+      "later_count": 6,
+      "later_total": 7,
+      "min_z": 3
+    }
+  },
+  "steady_reread": {
+    "compaction_happened": false,
+    "events": [
+      {"kind": "file_read", "target": "A", "failed": false},
+      {"kind": "file_read", "target": "A", "failed": false},
+      {"kind": "file_read", "target": "B", "failed": false},
+      {"kind": "file_read", "target": "B", "failed": false},
+      {"kind": "file_read", "target": "C", "failed": false},
+      {"kind": "file_read", "target": "C", "failed": false},
+      {"kind": "file_read", "target": "D", "failed": false},
+      {"kind": "file_read", "target": "D", "failed": false},
+      {"kind": "file_read", "target": "E", "failed": false},
+      {"kind": "file_read", "target": "E", "failed": false},
+      {"kind": "file_read", "target": "F", "failed": false},
+      {"kind": "file_read", "target": "G", "failed": false},
+      {"kind": "file_read", "target": "H", "failed": false},
+      {"kind": "file_read", "target": "I", "failed": false},
+      {"kind": "file_read", "target": "J", "failed": false},
+      {"kind": "file_read", "target": "F", "failed": false},
+      {"kind": "file_read", "target": "G", "failed": false},
+      {"kind": "file_read", "target": "H", "failed": false},
+      {"kind": "file_read", "target": "I", "failed": false},
+      {"kind": "file_read", "target": "J", "failed": false}
+    ],
+    "expect": {"fire": false}
+  },
+  "drift_only": {
+    "compaction_happened": false,
+    "events": [
+      {"kind": "message", "role": "user", "text": "Keep the function pure.", "target": ""},
+      {"kind": "file_read", "target": "f0", "failed": false},
+      {"kind": "file_read", "target": "f1", "failed": false},
+      {"kind": "file_read", "target": "f2", "failed": false},
+      {"kind": "file_read", "target": "f3", "failed": false},
+      {"kind": "file_read", "target": "f4", "failed": false},
+      {"kind": "message", "role": "assistant", "text": "Ignore the earlier constraint and add a cache.", "target": ""},
+      {"kind": "file_read", "target": "f5", "failed": false},
+      {"kind": "file_read", "target": "f6", "failed": false},
+      {"kind": "file_read", "target": "f7", "failed": false},
+      {"kind": "file_read", "target": "f8", "failed": false},
+      {"kind": "file_read", "target": "f9", "failed": false}
+    ],
+    "expect": {"fire": false}
+  },
+  "reread_after_compaction": {
+    "compaction_happened": true,
+    "events": [
+      {"kind": "file_read", "target": "A", "failed": false},
+      {"kind": "file_read", "target": "B", "failed": false},
+      {"kind": "file_read", "target": "C", "failed": false},
+      {"kind": "file_read", "target": "D", "failed": false},
+      {"kind": "file_read", "target": "E", "failed": false},
+      {"kind": "file_read", "target": "A", "failed": false},
+      {"kind": "file_read", "target": "A", "failed": false},
+      {"kind": "file_read", "target": "A", "failed": false},
+      {"kind": "file_read", "target": "A", "failed": false},
+      {"kind": "file_read", "target": "A", "failed": false}
+    ],
+    "expect": {"fire": false}
+  },
+  "reread_gate_unknown": {
+    "compaction_happened": null,
+    "events": [
+      {"kind": "file_read", "target": "A", "failed": false},
+      {"kind": "file_read", "target": "B", "failed": false},
+      {"kind": "file_read", "target": "C", "failed": false},
+      {"kind": "file_read", "target": "D", "failed": false},
+      {"kind": "file_read", "target": "E", "failed": false},
+      {"kind": "file_read", "target": "A", "failed": false},
+      {"kind": "file_read", "target": "A", "failed": false},
+      {"kind": "file_read", "target": "A", "failed": false},
+      {"kind": "file_read", "target": "A", "failed": false},
+      {"kind": "file_read", "target": "A", "failed": false}
+    ],
+    "expect": {"fire": false}
+  },
+  "failures_with_edits_between": {
+    "compaction_happened": false,
+    "events": [
+      {"kind": "action", "target": "edit", "failed": false},
+      {"kind": "command", "target": "pytest -q", "failed": true},
+      {"kind": "action", "target": "edit", "failed": false},
+      {"kind": "command", "target": "pytest -q", "failed": true},
+      {"kind": "action", "target": "edit", "failed": false},
+      {"kind": "command", "target": "pytest -q", "failed": true}
+    ],
+    "expect": {
+      "fire": true,
+      "behavior": "repeated_failure",
+      "moment_index": 5,
+      "earlier_count": 1,
+      "earlier_total": 3,
+      "later_count": 2,
+      "later_total": 3
+    }
+  },
+  "two_failures_stay_quiet": {
+    "compaction_happened": false,
+    "events": [
+      {"kind": "command", "target": "pytest -q", "failed": true},
+      {"kind": "action", "target": "edit", "failed": false},
+      {"kind": "command", "target": "pytest -q", "failed": true},
+      {"kind": "command", "target": "pytest -q", "failed": false}
+    ],
+    "expect": {"fire": false}
+  },
+  "three_failures_after_compaction": {
+    "compaction_happened": true,
+    "events": [
+      {"kind": "command", "target": "pytest -q", "failed": true},
+      {"kind": "command", "target": "pytest -q", "failed": true},
+      {"kind": "command", "target": "pytest -q", "failed": true}
+    ],
+    "expect": {"fire": false}
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "conversation_id": "34557859-a4f7-4ec3-9c8f-662e40035a5a",
+  "expect_fire": false,
+  "reason": "source transcript has no compaction field; gate is unknown",
+  "source": "/Users/samkim/.cursor/projects/Users-samkim-Projects-circadian/agent-transcripts/34557859-a4f7-4ec3-9c8f-662e40035a5a/34557859-a4f7-4ec3-9c8f-662e40035a5a.jsonl",
+  "note": "Tool-use records only. StrReplace and Write bodies dropped. User text not copied.",
+  "records": 64
+}
