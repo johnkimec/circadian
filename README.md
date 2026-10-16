@@ -1,6 +1,16 @@
 # Circadian
 
-Circadian notices when a Cursor coding session is getting worse and writes a handoff for a fresh session. It runs as project hooks in this repo. A call shows up in the chat with the handoff path. You open the next session and point it at that file.
+Circadian notices when a Cursor coding session is getting worse and writes a handoff for a fresh session. A call shows up in the chat with the handoff path. You open the next session and point it at that file.
+
+## Use it in a project
+
+Python 3.11 or newer has to be available as `python3`. From this repo, point the command at the project you work in:
+
+```
+python3 -m circadian install /path/to/project
+```
+
+That writes the hooks into that project's `.cursor/` directory and ignores `.circadian/` there. Open the project in Cursor. If the Hooks settings tab does not list `trace.py`, reload the window. Run the command again to update the copy.
 
 ## Try it
 

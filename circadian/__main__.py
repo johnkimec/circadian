@@ -8,6 +8,7 @@ from pathlib import Path
 
 from circadian.detector import detect
 from circadian.handoff import write_handoff
+from circadian.install import install
 from circadian.session import load_session
 from circadian.trace import handle_hook, session_from_transcript
 
@@ -42,6 +43,15 @@ def main(argv: list[str] | None = None) -> int:
             return 1
         print(write_handoff(session, call, out))
         return 0
+    if command == "install":
+        target = Path(args[1]) if len(args) > 1 else Path.cwd()
+        try:
+            install(target)
+        except ValueError as error:
+            print(error, file=sys.stderr)
+            return 1
+        print(target.resolve())
+        return 0
     if command == "backfill":
         transcript = Path(args[1])
         conversation_id = args[2]
@@ -50,7 +60,7 @@ def main(argv: list[str] | None = None) -> int:
 
         save_session(root, session_from_transcript(transcript, conversation_id))
         return 0
-    print("commands: hook, detect, handoff, backfill", file=sys.stderr)
+    print("commands: hook, detect, handoff, backfill, install", file=sys.stderr)
     return 2
 
 
