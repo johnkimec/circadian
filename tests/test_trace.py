@@ -204,6 +204,86 @@ class TraceTests(unittest.TestCase):
         self.assertIn("repeated failed commands", notice)
         self.assertIn("Earlier 1/3", notice)
         self.assertIn("Later 2/3", notice)
+        stopped = handle_hook(
+            {"hook_event_name": "stop", "conversation_id": conversation, "status": "completed", "loop_count": 0},
+            root=root,
+        )
+        self.assertEqual(stopped["followup_message"], notice)
+        again = handle_hook(
+            {"hook_event_name": "stop", "conversation_id": conversation, "status": "completed", "loop_count": 1},
+            root=root,
+        )
+        self.assertNotIn("followup_message", again)
+
+    def test_reread_stop_posts_the_notice_without_another_tool(self):
+        root = Path(self._tmp())
+        conversation = "notice-reread-stop"
+        for path in list("ABCDE") + ["A"] * 5:
+            response = handle_hook(
+                {
+                    "hook_event_name": "beforeReadFile",
+                    "conversation_id": conversation,
+                    "file_path": path,
+                },
+                root=root,
+            )
+        self.assertEqual(response, {"permission": "allow"})
+        stopped = handle_hook(
+            {"hook_event_name": "stop", "conversation_id": conversation, "status": "completed", "loop_count": 0},
+            root=root,
+        )
+        handoff = next((root / ".circadian" / "handoffs").glob("*.md"))
+        self.assertIn(handoff.relative_to(root).as_posix(), stopped["followup_message"])
+        again = handle_hook(
+            {"hook_event_name": "stop", "conversation_id": conversation, "status": "completed", "loop_count": 1},
+            root=root,
+        )
+        self.assertNotIn("followup_message", again)
+
+    def test_stop_shows_a_notice_that_only_has_the_old_delivered_flag(self):
+        root = Path(self._tmp())
+        conversation = "notice-old"
+        for _ in range(3):
+            handle_hook(
+                {
+                    "hook_event_name": "postToolUseFailure",
+                    "conversation_id": conversation,
+                    "tool_name": "Shell",
+                    "tool_input": {"command": "python3 scratch/demo/fail.py"},
+                    "failure_type": "error",
+                    "error_message": "failed",
+                },
+                root=root,
+            )
+        notice_path = root / ".circadian" / "sessions" / conversation / "notice.json"
+        text = json.loads(notice_path.read_text())["text"]
+        notice_path.write_text(json.dumps({"text": text, "delivered": True}) + "\n")
+        stopped = handle_hook(
+            {"hook_event_name": "stop", "conversation_id": conversation, "status": "completed", "loop_count": 0},
+            root=root,
+        )
+        self.assertEqual(stopped["followup_message"], text)
+
+    def test_stop_that_writes_the_handoff_posts_the_notice(self):
+        root = Path(self._tmp())
+        conversation = "notice-on-stop"
+        directory = root / ".circadian" / "sessions" / conversation
+        directory.mkdir(parents=True)
+        (directory / "session.json").write_text(
+            json.dumps({"conversation_id": conversation, "compaction_happened": False}) + "\n"
+        )
+        command = {"kind": "command", "target": "python3 scratch/demo/fail.py", "failed": True}
+        (directory / "events.jsonl").write_text("".join(json.dumps(command) + "\n" for _ in range(3)))
+        stopped = handle_hook(
+            {"hook_event_name": "stop", "conversation_id": conversation, "status": "completed", "loop_count": 0},
+            root=root,
+        )
+        self.assertIn("repeated failed commands", stopped["followup_message"])
+        again = handle_hook(
+            {"hook_event_name": "stop", "conversation_id": conversation, "status": "completed", "loop_count": 1},
+            root=root,
+        )
+        self.assertNotIn("followup_message", again)
 
     def test_transcript_backfill_leaves_failure_unknown(self):
         path = Path(self._tmp()) / "session.jsonl"

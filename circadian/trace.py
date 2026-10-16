@@ -32,6 +32,8 @@ def handle_hook(event: dict, root: Path | None = None) -> dict:
         return response
     if notice and name in _CONTEXT_EVENTS:
         response["additional_context"] = notice
+    if notice and name == "stop":
+        response["followup_message"] = notice
     return response
 
 
@@ -278,15 +280,26 @@ def _claim_notice(root: Path, session: Session, created: Path | None, hook_name:
     if created is not None:
         call = json.loads((directory / "call.json").read_text())
         text = _notice_text(root, created, call)
-        delivered = hook_name in _CONTEXT_EVENTS
-        notice_path.write_text(json.dumps({"text": text, "delivered": delivered}) + "\n")
-        return text if delivered else None
+        # additional_context reaches the model and does not show in the chat.
+        # The stop follow-up is the message the user sees, including when this
+        # stop is the hook that writes the handoff.
+        payload = {
+            "text": text,
+            "context_sent": hook_name in _CONTEXT_EVENTS,
+            "shown": hook_name == "stop",
+        }
+        notice_path.write_text(json.dumps(payload) + "\n")
+        return text if payload["context_sent"] or payload["shown"] else None
     if not notice_path.is_file():
         return None
     payload = json.loads(notice_path.read_text())
-    if payload.get("delivered") or hook_name not in _CONTEXT_EVENTS:
+    if hook_name in _CONTEXT_EVENTS and not payload.get("context_sent"):
+        payload["context_sent"] = True
+        notice_path.write_text(json.dumps(payload) + "\n")
+        return payload["text"]
+    if hook_name != "stop" or payload.get("shown"):
         return None
-    payload["delivered"] = True
+    payload["shown"] = True
     notice_path.write_text(json.dumps(payload) + "\n")
     return payload["text"]
 

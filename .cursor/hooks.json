@@ -15,6 +15,9 @@
     ],
     "afterAgentResponse": [
       { "command": ".cursor/hooks/trace.py", "timeout": 10 }
+    ],
+    "stop": [
+      { "command": ".cursor/hooks/trace.py", "timeout": 10, "loop_limit": 1 }
     ]
   }
 }

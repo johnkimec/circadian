@@ -16,7 +16,7 @@ python3 scratch/demo/fail.py
 After the third run, stop.
 ```
 
-On the third failure the chat gets a notice like:
+When that agent stops, Cursor posts the notice as the next message in the chat:
 
 ```
 Circadian reset. repeated failed commands. Earlier 0/2. Later 2/2. Open a new Cursor session and point it at .circadian/handoffs/<file>.md
